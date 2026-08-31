@@ -1,0 +1,3 @@
+import React from 'react';
+import { FilePlus2 } from 'lucide-react';
+export const EmptyState: React.FC<{ onAdd: () => void }> = ({ onAdd }) => <div className="col-span-full py-20 border-2 border-dashed border-[var(--border-color)] rounded-3xl text-center bg-[var(--bg-card)]"><FilePlus2 className="w-12 h-12 mx-auto mb-4 text-[var(--text-muted)] opacity-40" /><h2 className="font-bold text-xl">Belum ada skrip</h2><p className="text-sm text-[var(--text-muted)] mt-1 mb-5">Buat snippet atau project multi-file pertama Anda.</p><button onClick={onAdd} className="px-5 py-2.5 rounded-xl bg-red-600 text-white font-bold text-sm">Buat Skrip</button></div>;
