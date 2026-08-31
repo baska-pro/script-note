@@ -1,0 +1,34 @@
+{
+  "name": "script-note",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Local-first script and code snippet manager with multi-file projects, version history, trash, backups, and optional GitHub Gist sync.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run typecheck && npm run build"
+  },
+  "dependencies": {
+    "lucide-react": "^0.564.0",
+    "prismjs": "^1.30.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.0",
+    "@types/node": "^22.14.0",
+    "@types/prismjs": "^1.26.5",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^5.0.0",
+    "tailwindcss": "^4.1.0",
+    "typescript": "~5.8.2",
+    "vite": "^6.2.0"
+  },
+  "engines": {
+    "node": ">=20.19"
+  }
+}
