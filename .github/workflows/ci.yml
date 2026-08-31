@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: script-note-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [20, 22]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Production build
+        run: npm run build
+      - name: Validate version
+        shell: bash
+        run: |
+          set -euo pipefail
+          file_version="$(tr -d '[:space:]' < VERSION)"
+          package_version="$(node -p "require('./package.json').version")"
+          test "$file_version" = "$package_version"
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+            test "${GITHUB_REF_NAME#v}" = "$file_version"
+          fi
+      - name: Repository hygiene
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git ls-files | grep -E '(^|/)(node_modules|dist)(/|$)|(^|/)\.env($|\.)|\.local$'; then
+            echo "Runtime/generated/private files must not be committed." >&2
+            exit 1
+          fi
+          if git grep -nE 'AIza[0-9A-Za-z_-]{30,}|gh[pousr]_[0-9A-Za-z]{20,}|github_pat_[0-9A-Za-z_]+' -- . ':!RELEASE_NOTES_v1.0.0.md'; then
+            echo "Potential credential detected." >&2
+            exit 1
+          fi
